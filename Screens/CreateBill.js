@@ -3,72 +3,77 @@ import {
   StyleSheet,
   Text,
   TextInput,
-
   View,
   ScrollView,
   Button,
   Alert,
 } from "react-native";
 import dateFormat, { masks } from "dateformat";
-import {Picker} from "@react-native-picker/picker";
-import * as Print from 'expo-print';
-import { shareAsync } from 'expo-sharing';
-import {PdfCode} from "../Component/PdfCode";
-import * as React from 'react';
+import { Picker } from "@react-native-picker/picker";
+import * as Print from "expo-print";
+import { shareAsync } from "expo-sharing";
+import { PdfCode } from "../Component/PdfCode";
+import * as React from "react";
 
 const CreateBill = () => {
   const [name, set_Name] = useState("");
   const [Address, Set_Address] = useState("");
   const [Mobile_No, Set_Mobile_No] = useState("");
-  const [Quantity,setQuantity] = useState('');
+  const [Quantity, setQuantity] = useState("");
   const now = new Date();
-  const [Invoice,setInvoice] = useState(dateFormat(now, "ddmmyyhhMss")) 
-  const [Product, Set_Product] = useState("मुरुम");
-  const [Total,setTotal] = useState('');
-  const [ReceivedBalance,SetReceivedBalance] = useState('');
-  const [PaymentType,setPaymentType] = useState('Credit');
-  const [RemaningBalance, setRemaningBalance] = useState('Paid');
+  const [Invoice, setInvoice] = useState(dateFormat(now, "ddmmyyhhMss"));
+  const [Product, Set_Product] = useState("Exam Fee");
+  const [Total, setTotal] = useState("");
+  const [ReceivedBalance, SetReceivedBalance] = useState("");
+  const [PaymentType, setPaymentType] = useState("Credit");
+  const [RemaningBalance, setRemaningBalance] = useState("Paid");
   const [selectedPrinter, setSelectedPrinter] = React.useState();
 
-  
   const print = async () => {
     // On iOS/android prints the given html. On web prints the HTML from the current page.
     await Print.printAsync({
       html,
       printerUrl: selectedPrinter?.url, // iOS only
     });
-  }
+  };
 
   const printToFile = async () => {
-    let html = PdfCode(name,Address,Mobile_No,Quantity,Invoice,Product,Total,ReceivedBalance,PaymentType,RemaningBalance);
+    let html = PdfCode(
+      name,
+      Address,
+      Mobile_No,
+      Quantity,
+      Invoice,
+      Product,
+      Total,
+      ReceivedBalance,
+      PaymentType,
+      RemaningBalance
+    );
     // On iOS/android prints the given html. On web prints the HTML from the current page.
-    try{
+    try {
       const { uri } = await Print.printToFileAsync({
-        html
+        html,
       });
-      console.log('File has been saved to:', uri);
-      await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+      console.log("File has been saved to:", uri);
+      await shareAsync(uri, { UTI: ".pdf", mimeType: "application/pdf" });
 
-      set_Name('');
+      set_Name("");
       setInvoice(dateFormat(now, "ddmmyyhhMss"));
-      setTotal('');
-      setQuantity('');
-      SetReceivedBalance('');
-      Set_Address('');
-      Set_Mobile_No('');
-      
-
-    }catch(err){
-        Alert.alert("Make shure You have Internet Connection or contact @+91 8530730017");
+      setTotal("");
+      setQuantity("");
+      SetReceivedBalance("");
+      Set_Address("");
+      Set_Mobile_No("");
+    } catch (err) {
+      Alert.alert("Make sure You have a stable Internet Connection");
     }
-
-
-  }
+  };
 
   const selectPrinter = async () => {
     const printer = await Print.selectPrinterAsync(); // iOS only
     setSelectedPrinter(printer);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -104,24 +109,20 @@ const CreateBill = () => {
           />
         </View>
         <View style={styles.InputContainer}>
-            <Text>Product : </Text>
-            <View style={styles.PickerContainer}>
-          <Picker
-            selectedValue={Product}
-            style={styles.Picker}
-            onValueChange={(itemValue, itemIndex) => Set_Product(itemValue)}
-          >
-            {/* 'ग्रिट (Grit)','दगड','Crash Sand','Plaster Sand' */}
-            <Picker.Item label="मुरुम" value="मुरुम" />
-            <Picker.Item label="खडी" value="खडी" />
-            <Picker.Item label="वाळू" value="वाळू" />
-            <Picker.Item label="माती" value="माती" />
-            <Picker.Item label="ग्रिट (Grit)" value="ग्रिट (Grit)" />
-            <Picker.Item label="दगड" value="दगड" />
-            <Picker.Item label="Crash Sand" value="Crash Sand" />
-            <Picker.Item label="Plaster Sand" value="Plaster Sand" />
-          </Picker>
-        </View>
+          <Text>Product : </Text>
+          <View style={styles.PickerContainer}>
+            <Picker
+              selectedValue={Product}
+              style={styles.Picker}
+              onValueChange={(itemValue, itemIndex) => Set_Product(itemValue)}
+            >
+              {/* 'ग्रिट (Grit)','दगड','Crash Sand','Plaster Sand' */}
+              <Picker.Item label="Exam" value="Exam" />
+              <Picker.Item label="Bus" value="Bus" />
+              <Picker.Item label="Academic" value="Academic" />
+              <Picker.Item label="Hostel" value="Hostel" />
+            </Picker>
+          </View>
         </View>
         <View style={styles.InputContainer}>
           <Text>Quantity : </Text>
@@ -178,28 +179,25 @@ const CreateBill = () => {
         </View>
         {/* Payment Method  */}
         <View style={styles.InputContainer}>
-            <Text>Payment Method : </Text>
-            <View style={styles.PickerContainer}>
-          <Picker
-            selectedValue={PaymentType}
-            style={styles.Picker}
-            onValueChange={(itemValue, itemIndex) => setPaymentType(itemValue)}
-          >
-            {/* 'ग्रिट (Grit)','दगड','Crash Sand','Plaster Sand' */}
-            <Picker.Item label="Credit" value="Credit" />
-            <Picker.Item label="Cash" value="Cash" />
-            <Picker.Item label="Other" value="Other" />
-          </Picker>
-        </View>
-
+          <Text>Payment Method : </Text>
+          <View style={styles.PickerContainer}>
+            <Picker
+              selectedValue={PaymentType}
+              style={styles.Picker}
+              onValueChange={(itemValue, itemIndex) =>
+                setPaymentType(itemValue)
+              }
+            >
+              {/* 'ग्रिट (Grit)','दगड','Crash Sand','Plaster Sand' */}
+              <Picker.Item label="Credit" value="Credit" />
+              <Picker.Item label="Cash" value="Cash" />
+              <Picker.Item label="Other" value="Other" />
+            </Picker>
+          </View>
         </View>
         <View style={styles.CreateInvoiceButton}>
-        <Button 
-        title="Create Invoice"
-        onPress={printToFile}
-        />
+          <Button title="Create Invoice" onPress={printToFile} />
         </View>
-        
       </ScrollView>
     </View>
   );
@@ -235,27 +233,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 4,
     padding: 4,
-    marginBottom:6
+    marginBottom: 6,
   },
-  PickerContainer:{
-    marginTop:10,
-    borderWidth:1,
-    borderRadius:4,
-    height:50
-    
+  PickerContainer: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 4,
+    height: 50,
   },
-  CreateInvoiceButton : {
+  CreateInvoiceButton: {
     marginTop: 15,
     marginLeft: 15,
     marginRight: 15,
-    marginBottom : 15
+    marginBottom: 15,
   },
   spacer: {
-    height: 8
+    height: 8,
   },
   printer: {
-    textAlign: 'center',
-  }
+    textAlign: "center",
+  },
 });
 
 export default CreateBill;
